@@ -7,15 +7,11 @@ echo ================================================================
 echo.
 cd /d "%~dp0"
 
-set /p REPO_URL="Enter your GitHub Repository URL (e.g. https://github.com/username/local-buddy.git): "
+set DEFAULT_REPO=https://github.com/Prince789-student/local-buddy.git
+set /p REPO_URL="Enter GitHub Repository URL [Press ENTER for %DEFAULT_REPO%]: "
+if "%REPO_URL%"=="" set REPO_URL=%DEFAULT_REPO%
 
-if "%REPO_URL%"=="" (
-    echo [!] No URL entered. Exiting.
-    pause
-    exit /b 1
-)
-
-echo [*] Adding remote origin...
+echo [*] Setting remote origin to %REPO_URL%...
 git remote remove origin 2>nul
 git remote add origin %REPO_URL%
 
