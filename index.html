@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Buddy - Neighborhood Essentials & Services</title>
+  <meta name="description" content="Local Buddy - Your friendly neighborhood daily essentials store and trusted local home services directory. Order groceries, medicines, trade supplies, and hire verified experts.">
+  <meta name="theme-color" content="#10b981">
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/storefront.css">
+</head>
+<body>
+
+  <!-- Top App Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      
+      <!-- Brand Logo & Store Info -->
+      <div class="brand-wrapper" id="brandHeaderHome">
+        <img src="assets/logo.jpg" alt="Local Buddy Logo" class="brand-logo-img">
+        <div class="brand-text">
+          <h1>Local Buddy <span class="brand-badge">Neighborhood Mart</span></h1>
+          <span class="brand-tagline" id="headerShopName">Local Buddy - SuperStore & Services</span>
+        </div>
+      </div>
+
+      <!-- Mode Switcher (Merchant Hub vs Customer Storefront vs Hire Services) -->
+      <nav class="view-switcher-pill" aria-label="View switcher">
+        <button type="button" class="view-btn active" id="viewSwitchMerchant" title="Shopkeeper Inventory & Analytics View">
+          📊 Merchant Hub
+        </button>
+        <button type="button" class="view-btn" id="viewSwitchCustomer" title="Live Customer Ordering View">
+          🛍️ Customer Storefront
+        </button>
+        <button type="button" class="view-btn" id="viewSwitchServices" title="Hire Neighborhood Experts & Pros">
+          🛠️ Hire Services
+        </button>
+      </nav>
+
+      <!-- Global Actions -->
+      <div class="header-actions">
+        <a href="pitch_deck.html" class="icon-btn" style="text-decoration: none; font-size: 0.85rem; font-weight: 700; width: auto; padding: 0.4rem 0.8rem; border-radius: 9999px; gap: 0.3rem;" title="View Investor Pitch Deck">
+          📑 Pitch Deck
+        </a>
+        <button type="button" class="icon-btn" id="openProfileSettingsBtn" title="Store Profile & Settings" aria-label="Store Settings">
+          ⚙️
+        </button>
+        <button type="button" class="icon-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+          <span id="themeToggleIcon">☀️</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-wrapper">
+
+    <!-- ====================================================================
+         VIEW 1: MERCHANT INVENTORY HUB
+         ==================================================================== -->
+    <div id="merchantViewContainer">
+      
+      <!-- Attention Stock Alert Banner -->
+      <aside class="alert-banner" id="stockAlertBanner" role="alert">
+        <div class="alert-banner-content">
+          <span style="font-size: 1.3rem">⚠️</span>
+          <span id="stockAlertText">You have items requiring immediate restocking attention.</span>
+        </div>
+        <button type="button" class="alert-banner-btn" onclick="inventoryController.filterByLowStockAlert()">
+          View Low Stock Items
+        </button>
+      </aside>
+
+      <!-- Store Analytics & KPI Widgets -->
+      <section class="kpi-grid" aria-label="Inventory Analytics Overview">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Active Catalog SKUs</span>
+            <div class="kpi-icon-box indigo">🏷️</div>
+          </div>
+          <div class="kpi-value" id="kpiTotalSKU">0</div>
+          <div class="kpi-footer">
+            <span class="kpi-badge positive">All categories</span> in catalog
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Total Stock Units</span>
+            <div class="kpi-icon-box green">📦</div>
+          </div>
+          <div class="kpi-value" id="kpiTotalUnits">0</div>
+          <div class="kpi-footer">
+            <span>Live shop & warehouse stock</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Inventory Valuation</span>
+            <div class="kpi-icon-box green">💰</div>
+          </div>
+          <div class="kpi-value" id="kpiRetailValuation">₹0</div>
+          <div class="kpi-footer">
+            <span>Cost: <span id="kpiCostValuation" style="font-weight:600">₹0</span></span>
+            <span class="kpi-badge positive" id="kpiProfitMargin">0% Margin</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Stock Health</span>
+            <div class="kpi-icon-box amber">⚡</div>
+          </div>
+          <div class="kpi-value" style="display:flex; gap:0.5rem; align-items:baseline">
+            <span id="kpiLowStock" style="color:var(--warning)">0</span>
+            <span style="font-size:1rem; color:var(--text-muted)">low /</span>
+            <span id="kpiOutOfStock" style="color:var(--danger)">0</span>
+            <span style="font-size:1rem; color:var(--text-muted)">empty</span>
+          </div>
+          <div class="kpi-footer">
+            <span class="kpi-badge alert">Requires restock</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Merchant Subtabs (Inventory vs Service Partners) -->
+      <div class="merchant-subtabs-nav" aria-label="Merchant view tabs">
+        <button type="button" class="subtab-btn active" id="merchantSubTabInventory">
+          📦 Product Inventory
+        </button>
+        <button type="button" class="subtab-btn" id="merchantSubTabServices">
+          🛠️ Service Partners & Leads
+        </button>
+      </div>
+
+      <!-- Merchant Section A: Inventory Management -->
+      <div id="merchantInventorySection">
+
+        <!-- Inventory Management Toolbar -->
+        <section class="toolbar-section" aria-label="Inventory controls">
+        <div class="toolbar-top">
+          
+          <!-- Live Search -->
+          <div class="search-box-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="search" id="merchantSearchInput" class="search-input" placeholder="Search by item name, SKU, or category..." autocomplete="off">
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="toolbar-actions">
+            <button type="button" class="btn btn-success" id="openStockStationBtn" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; font-weight: 800; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);" title="Fast Stock In / Stock Out Station via Camera Barcode Scanner & Microphone">
+              ⚡ Stock IN / OUT
+            </button>
+            <button type="button" class="btn btn-secondary" id="quickScanBtn" title="Scan Barcode / QR with Camera">
+              📷 Scan
+            </button>
+            <button type="button" class="btn btn-secondary" id="quickVoiceBtn" title="Speak to update stock with Mic">
+              🎙️ Voice Mic
+            </button>
+            <button type="button" class="btn btn-primary" id="openAddProductBtn">
+              <span>+</span> Add Product
+            </button>
+            <button type="button" class="btn btn-secondary" id="exportCsvBtn" title="Download spreadsheet of current inventory">
+              📥 Export CSV
+            </button>
+            <button type="button" class="btn btn-secondary" id="exportJsonBtn" title="Download complete database backup">
+              💾 Backup
+            </button>
+            <label class="btn btn-secondary" style="margin:0; cursor:pointer" title="Import inventory from JSON">
+              📤 Import
+              <input type="file" id="importFileInput" accept=".json" style="display:none">
+            </label>
+            <button type="button" class="btn btn-secondary" id="resetCatalogBtn" title="Reset to default supermarket items">
+              🔄 Reset Demo
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Filters & View Mode Toggles -->
+        <div class="toolbar-filters">
+          
+          <!-- Category Selector -->
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <label for="merchantCategorySelect" class="form-label" style="margin:0">Category:</label>
+            <select id="merchantCategorySelect" class="select-control">
+              <option value="all">All Categories</option>
+            </select>
+          </div>
+
+          <!-- Status Filter Pills -->
+          <div class="filter-pills">
+            <button type="button" class="filter-pill active" data-status="all">All</button>
+            <button type="button" class="filter-pill" data-status="in-stock">In Stock</button>
+            <button type="button" class="filter-pill" data-status="low-stock">⚠️ Low Stock</button>
+            <button type="button" class="filter-pill" data-status="out-of-stock">🔴 Out of Stock</button>
+          </div>
+
+          <!-- Sort Selector -->
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <label for="merchantSortSelect" class="form-label" style="margin:0">Sort:</label>
+            <select id="merchantSortSelect" class="select-control">
+              <option value="name_asc">Name (A → Z)</option>
+              <option value="name_desc">Name (Z → A)</option>
+              <option value="stock_asc">Stock (Low first)</option>
+              <option value="stock_desc">Stock (High first)</option>
+              <option value="price_desc">Price (High to Low)</option>
+              <option value="price_asc">Price (Low to High)</option>
+            </select>
+          </div>
+
+          <!-- Table vs Grid Mode Switcher -->
+          <div class="view-mode-toggle">
+            <button type="button" class="view-mode-btn active" id="viewModeTable" title="Table View">
+              ☰
+            </button>
+            <button type="button" class="view-mode-btn" id="viewModeGrid" title="Visual Cards View">
+              ☷
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Merchant Products Table View -->
+      <div class="table-container" id="merchantTableView">
+        <table class="inventory-table">
+          <thead>
+            <tr>
+              <th>Product Details</th>
+              <th>Category</th>
+              <th>Pricing & Margin</th>
+              <th>Live Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inventoryTableBody">
+            <!-- Rendered by inventory.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Merchant Grid View (Alternative) -->
+      <div class="merchant-grid" id="merchantGridView" style="display:none">
+        <!-- Rendered by inventory.js -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="merchantEmptyState" style="display:none">
+        <div class="empty-icon">📦</div>
+        <h3>No Products Found</h3>
+        <p>No inventory items match your current search and filter criteria. Try clearing filters or add a new item.</p>
+        <button type="button" class="btn btn-primary" onclick="inventoryController.openProductModal()">
+          + Add Product
+        </button>
+      </div>
+    </div>
+      <!-- End Merchant Section A: Inventory Management -->
+
+      <!-- Merchant Section B: Local Services & Leads Management -->
+      <div id="merchantServicesSection" style="display:none">
+        
+        <!-- Services KPI Summary Grid -->
+        <section class="kpi-grid" aria-label="Services Metrics" style="margin-bottom: 1.5rem;">
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Registered Pros</span>
+              <span class="kpi-icon-wrapper">👥</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value" id="kpiTotalServicePros">0</span>
+              <span style="font-size:1rem; color:var(--text-muted)">partners</span>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-badge positive">All Local Trades</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Active & Available</span>
+              <span class="kpi-icon-wrapper">🟢</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value" id="kpiAvailableServicePros">0</span>
+              <span style="font-size:1rem; color:var(--text-muted)">ready</span>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-badge positive">Same-day dispatch</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Customer Leads</span>
+              <span class="kpi-icon-wrapper">📋</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value" id="kpiTotalServiceBookings">0</span>
+              <span style="font-size:1rem; color:var(--text-muted)">inquiries</span>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-badge info">Direct bookings</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Pending Inquiries</span>
+              <span class="kpi-icon-wrapper">⏳</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value" id="kpiPendingServiceBookings">0</span>
+              <span style="font-size:1rem; color:var(--text-muted)">to confirm</span>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-badge alert">Action required</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Service Partners Header & Actions -->
+        <section class="toolbar-section" aria-label="Services Toolbar" style="margin-bottom: 1.25rem;">
+          <div class="toolbar-top" style="justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin:0;">
+                Verified Service Partners Roster
+              </h3>
+              <p style="font-size:0.82rem; color:var(--text-muted); margin:0.25rem 0 0 0;">
+                Manage neighborhood plumbers, electricians, masons, doctors, and tradesmen displayed in the customer directory.
+              </p>
+            </div>
+            <div class="toolbar-actions">
+              <button type="button" class="btn btn-primary" id="openAddServiceBtn">
+                <span>+</span> Add Service Partner
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Service Partners Table -->
+        <div class="table-container" style="margin-bottom: 2rem;">
+          <table class="inventory-table">
+            <thead>
+              <tr>
+                <th>Professional & Title</th>
+                <th>Trade / Specialty</th>
+                <th>Contact & WhatsApp</th>
+                <th>Visiting Fee</th>
+                <th>Availability</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="merchantServicesTableBody">
+              <!-- Rendered by services.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Customer Booking Inquiries Section -->
+        <div style="margin-top: 2rem;">
+          <div style="margin-bottom: 1rem;">
+            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin:0;">
+              Customer Service Inquiries & Leads
+            </h3>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin:0.25rem 0 0 0;">
+              Recent service appointment requests booked by customers from the storefront or services directory.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <table class="inventory-table">
+              <thead>
+                <tr>
+                  <th>Booking ID & Date</th>
+                  <th>Customer Details</th>
+                  <th>Requested Service</th>
+                  <th>Task / Problem Details</th>
+                  <th>Preferred Slot</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="merchantBookingsTableBody">
+                <!-- Rendered by services.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <!-- End Merchant Section B: Local Services Management -->
+
+    </div>
+    <!-- End View 1: Merchant Inventory Hub -->
+
+    <!-- ====================================================================
+         VIEW 2: CUSTOMER DIGITAL STOREFRONT
+         ==================================================================== -->
+    <div id="customerViewContainer" style="display:none">
+      
+      <!-- Storefront Hero Card -->
+      <section class="storefront-hero">
+        <div class="storefront-hero-inner">
+          <div class="store-info-box">
+            <div class="store-live-pill">
+              <span class="store-live-dot"></span> Store Open & Accepting Orders
+            </div>
+            <h2 class="store-name-title" id="storeHeroName">Local Buddy - SuperStore & Services</h2>
+            <p class="store-tagline-text" id="storeHeroTagline">Your Friendly Neighborhood Buddy for Daily Essentials, Medicines, Tools & Home Services</p>
+            
+            <div class="store-meta-chips">
+              <div class="store-meta-chip">
+                <span>📍</span> <span id="storeHeroAddress">Main Market Road, Ward 4</span>
+              </div>
+              <div class="store-meta-chip">
+                <span>📞</span> <span id="storeHeroPhone">+91 98765 43210</span>
+              </div>
+              <div class="store-meta-chip">
+                <span>⚡</span> <span>Fast Store Pickup / Local Delivery</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="store-hero-actions">
+            <div class="store-hours-badge">
+              🕒 Hours: <span id="storeHeroHours">7:30 AM - 10:30 PM</span>
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-muted)">
+              💬 Orders dispatched directly via WhatsApp
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services & Trade Experts Promotional Banner -->
+      <aside class="services-promo-banner" id="servicesPromoBanner">
+        <div class="services-promo-content">
+          <span class="promo-icon">🛠️</span>
+          <div>
+            <strong>Need a Plumber, Electrician, Doctor, Welder, or Mason?</strong>
+            <p>Hire background-verified local experts with same-day doorstep visits & transparent pricing.</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnJumpToServices">
+          Hire Local Pros →
+        </button>
+      </aside>
+
+      <!-- Customer Search Bar -->
+      <div style="margin-bottom: 1.25rem;">
+        <div class="search-box-wrapper" style="max-width: 600px;">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="shopperSearchInput" class="search-input" placeholder="Search groceries, medicines, plumbing, electrical, tools, electronics..." autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Horizontal Category Filter Pills -->
+      <div class="storefront-category-scroll" id="storefrontCategoryScroll">
+        <!-- Rendered by storefront.js -->
+      </div>
+
+      <!-- Customer Products Grid -->
+      <section class="storefront-grid" id="storefrontProductsGrid">
+        <!-- Rendered by storefront.js -->
+      </section>
+
+      <!-- Empty State for Shopper -->
+      <div class="empty-state" id="storefrontEmptyState" style="display:none">
+        <div class="empty-icon">🔍</div>
+        <h3>No matching items available</h3>
+        <p>We couldn't find any products matching your query. Check back soon or search for other everyday essentials.</p>
+      </div>
+
+    </div>
+    <!-- End View 2: Customer Digital Storefront -->
+
+    <!-- ====================================================================
+         VIEW 3: LOCAL SERVICE PROVIDERS DIRECTORY
+         ==================================================================== -->
+    <div id="servicesViewContainer" style="display:none">
+      
+      <!-- Services Directory Hero Card -->
+      <section class="services-hero">
+        <div class="services-hero-inner">
+          <div class="services-info-box">
+            <div class="store-live-pill">
+              <span class="store-live-dot"></span> Verified Local Trades & Health Professionals
+            </div>
+            <h2 class="services-hero-title">Hire Trusted Neighborhood Pros & Technicians</h2>
+            <p class="services-hero-tagline">Same-day home visits and guaranteed craftsmanship from verified Plumbers, Electricians, Doctors, Masons, Welders, Carpenters, Painters & Appliance Specialists.</p>
+            
+            <div class="store-meta-chips">
+              <div class="store-meta-chip">
+                <span>🛡️</span> <span>Background & Skill Checked</span>
+              </div>
+              <div class="store-meta-chip">
+                <span>⚡</span> <span>Fast 30-Min to Same-Day Arrival</span>
+              </div>
+              <div class="store-meta-chip">
+                <span>💬</span> <span>Direct WhatsApp Booking & Fair Pricing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Search Bar -->
+      <div style="margin-bottom: 1.25rem;">
+        <div class="search-box-wrapper" style="max-width: 600px;">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="servicesSearchInput" class="search-input" placeholder="Search by name, trade, or issue (e.g. pipe leakage, fever, gate welding, MCB wiring)..." autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Horizontal Profession Category Filter Pills -->
+      <div class="storefront-category-scroll" id="servicesCategoryScroll">
+        <!-- Rendered by services.js -->
+      </div>
+
+      <!-- Services Grid -->
+      <section class="services-grid" id="servicesDirectoryGrid" aria-label="Local Service Providers">
+        <!-- Rendered by services.js -->
+      </section>
+
+      <!-- Services Empty State -->
+      <div class="empty-state" id="servicesEmptyState" style="display:none">
+        <div class="empty-icon">🔍</div>
+        <h3>No Service Providers Found</h3>
+        <p>No verified professionals match your current filter or search keyword. Try clearing filters or search another trade.</p>
+        <button type="button" class="btn btn-primary" onclick="servicesController.setCategory('all'); document.getElementById('servicesSearchInput').value=''; servicesController.searchQuery=''; servicesController.renderDirectoryCards();">
+          Show All Services
+        </button>
+      </div>
+
+    </div>
+    <!-- End View 3: Local Service Providers Directory -->
+
+  </main>
+
+  <!-- ====================================================================
+       CUSTOMER FLOATING CART BAR (Appears when items are in basket)
+       ==================================================================== -->
+  <div class="floating-cart-bar" id="floatingCartBar">
+    <div class="floating-cart-info">
+      <span>🛍️ Basket:</span>
+      <span class="floating-cart-count-badge" id="floatingCartCount">0 items</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <span class="floating-cart-total" id="floatingCartTotal">₹0</span>
+      <span style="font-weight:700; font-size:0.88rem;">Review & Order →</span>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       CUSTOMER CART & WHATSAPP CHECKOUT DRAWER
+       ==================================================================== -->
+  <div class="cart-drawer-overlay" id="cartDrawerOverlay">
+    <aside class="cart-drawer" aria-label="Shopping Cart">
+      
+      <div class="cart-drawer-header">
+        <div style="display:flex; align-items:center; gap:0.5rem">
+          <span style="font-size:1.4rem">🛒</span>
+          <h3 class="cart-drawer-title">Your Basket (<span id="cartDrawerBadge">0</span>)</h3>
+        </div>
+        <button type="button" class="icon-btn" id="closeCartDrawerBtn" title="Close Cart">✕</button>
+      </div>
+
+      <!-- Itemized Cart List -->
+      <div class="cart-items-list" id="cartItemsList">
+        <!-- Rendered by storefront.js -->
+      </div>
+
+      <!-- Order Details & Checkout -->
+      <div class="cart-drawer-footer">
+        
+        <!-- Fulfillment Mode Toggle -->
+        <div class="form-group">
+          <label class="form-label">Order Type:</label>
+          <div class="delivery-options-group">
+            <button type="button" class="delivery-option-btn active" id="deliveryTypePickup">
+              🏪 In-Store Pickup
+            </button>
+            <button type="button" class="delivery-option-btn" id="deliveryTypeHome">
+              🏠 Home Delivery
+            </button>
+          </div>
+        </div>
+
+        <!-- Customer Name -->
+        <div class="form-group">
+          <label class="form-label" for="custNameInput">Your Name:</label>
+          <input type="text" id="custNameInput" class="form-input" placeholder="e.g. Priya Sharma">
+        </div>
+
+        <!-- Customer Phone -->
+        <div class="form-group">
+          <label class="form-label" for="custPhoneInput">Your Contact Phone:</label>
+          <input type="tel" id="custPhoneInput" class="form-input" placeholder="e.g. 9876543210">
+        </div>
+
+        <!-- Delivery Address (Toggled) -->
+        <div class="form-group" id="deliveryAddressField" style="display:none">
+          <label class="form-label" for="custAddressInput">Delivery Address / Flat No:</label>
+          <textarea id="custAddressInput" class="form-textarea" rows="2" placeholder="Building, Street, Landmark..."></textarea>
+        </div>
+
+        <!-- Cart Totals -->
+        <div style="display:flex; flex-direction:column; gap:0.35rem;">
+          <div class="cart-summary-line">
+            <span>Subtotal:</span>
+            <span id="cartSubtotalAmount">₹0</span>
+          </div>
+          <div class="cart-summary-line total">
+            <span>Total Payable:</span>
+            <span id="cartTotalAmount">₹0</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <button type="button" class="whatsapp-checkout-btn" id="whatsappCheckoutBtn">
+          <span>💬</span> Send Order on WhatsApp
+        </button>
+
+        <button type="button" class="btn btn-secondary" id="copyOrderTextBtn" style="width:100%; font-size:0.8rem">
+          📋 Copy Order Text
+        </button>
+
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: ADD / EDIT PRODUCT
+       ==================================================================== -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-window">
+      
+      <div class="modal-header">
+        <h3 class="modal-title" id="productModalTitle">Add New Product</h3>
+        <button type="button" class="icon-btn" onclick="inventoryController.closeProductModal()">✕</button>
+      </div>
+
+      <form id="productForm">
+        <div class="modal-body">
+          
+          <div class="form-group">
+            <label class="form-label" for="prodName">Product Name *</label>
+            <input type="text" id="prodName" class="form-input" placeholder="e.g. Aashirvaad Whole Wheat Atta" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="prodCategory">Category *</label>
+              <select id="prodCategory" class="form-select" required>
+                <!-- Injected by inventory.js -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prodSKU">SKU / Barcode Code</label>
+              <input type="text" id="prodSKU" class="form-input" placeholder="e.g. GROC-ATT-001">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="prodCostPrice">Cost Price (Wholesale) *</label>
+              <input type="number" id="prodCostPrice" class="form-input" step="0.5" placeholder="e.g. 180" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prodSellingPrice">Selling Price (Retail MRP) *</label>
+              <input type="number" id="prodSellingPrice" class="form-input" step="0.5" placeholder="e.g. 210" required>
+            </div>
+          </div>
+
+          <!-- Profit Margin Preview indicator -->
+          <div id="prodMarginPreview" style="font-size:0.8rem; font-weight:700; margin-top:-0.5rem"></div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="prodStock">Current Stock Quantity *</label>
+              <input type="number" id="prodStock" class="form-input" min="0" placeholder="e.g. 20" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prodUnit">Unit of Sale *</label>
+              <input type="text" id="prodUnit" class="form-input" placeholder="e.g. 1 kg Pack, 500ml, Piece" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="prodThreshold">Low Stock Alert Level</label>
+              <input type="number" id="prodThreshold" class="form-input" min="1" value="5">
+              <span class="form-hint">Alert triggers when stock drops to or below this</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prodExpiry">Best Before / Expiry Date</label>
+              <input type="date" id="prodExpiry" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="prodImageUrl">Image URL (Optional)</label>
+            <input type="url" id="prodImageUrl" class="form-input" placeholder="https://images.unsplash.com/...">
+            <span class="form-hint">Paste an image link or leave blank for a standard clean category photo</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="prodDesc">Short Product Description</label>
+            <textarea id="prodDesc" class="form-textarea" rows="2" placeholder="Key ingredients, brand details, or highlights..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="inventoryController.closeProductModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: STORE PROFILE & CONTACT SETTINGS
+       ==================================================================== -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-window">
+      
+      <div class="modal-header">
+        <h3 class="modal-title">Store Profile & Ordering Settings</h3>
+        <button type="button" class="icon-btn" id="closeProfileModalBtn">✕</button>
+      </div>
+
+      <form id="profileForm">
+        <div class="modal-body">
+          
+          <div class="form-group">
+            <label class="form-label" for="profileShopName">Shop Name *</label>
+            <input type="text" id="profileShopName" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="profileTagline">Store Tagline / Subtitle</label>
+            <input type="text" id="profileTagline" class="form-input">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="profileOwnerName">Owner / Manager Name</label>
+              <input type="text" id="profileOwnerName" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profilePhone">Display Contact Number</label>
+              <input type="text" id="profilePhone" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="profileWhatsApp">WhatsApp Number for Orders *</label>
+              <input type="text" id="profileWhatsApp" class="form-input" placeholder="e.g. 919876543210 (country code + number)" required>
+              <span class="form-hint">Used for 1-click customer WhatsApp ordering</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profileUPI">UPI ID for Digital Payments</label>
+              <input type="text" id="profileUPI" class="form-input" placeholder="e.g. yourstore@upi">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="profileAddress">Physical Shop Address</label>
+            <textarea id="profileAddress" class="form-textarea" rows="2"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="profileHours">Store Timings</label>
+              <input type="text" id="profileHours" class="form-input" placeholder="e.g. 8:00 AM - 10:00 PM">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profileCurrency">Currency Symbol</label>
+              <input type="text" id="profileCurrency" class="form-input" placeholder="₹" maxlength="4">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('profileModal').classList.remove('active')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: CUSTOMER SERVICE BOOKING & WHATSAPP DISPATCH
+       ==================================================================== -->
+  <div class="modal-overlay" id="serviceBookingModal">
+    <div class="modal-window">
+      
+      <div class="modal-header">
+        <h3 class="modal-title">Book Service Appointment</h3>
+        <button type="button" class="icon-btn" id="closeServiceBookingBtn">✕</button>
+      </div>
+
+      <!-- Selected Pro Card Banner -->
+      <div id="serviceBookingHeader" style="padding: 1rem 1.5rem; background: var(--bg-surface-2); border-bottom: 1px solid var(--border-color);">
+        <!-- Populated dynamically by services.js -->
+      </div>
+
+      <form id="serviceBookingForm">
+        <div class="modal-body">
+          
+          <div class="form-group">
+            <label class="form-label" for="bookingTaskSelect">Specific Task / Requirement *</label>
+            <select id="bookingTaskSelect" class="select-control" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="bookingDescriptionInput">Describe Problem or Work Needed (Optional)</label>
+            <textarea id="bookingDescriptionInput" class="form-textarea" rows="2" placeholder="e.g. Kitchen tap leaking continuously, or need safety gate welded..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="bookingDateInput">Preferred Date *</label>
+              <input type="date" id="bookingDateInput" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bookingSlotSelect">Preferred Time Window *</label>
+              <select id="bookingSlotSelect" class="select-control" required>
+                <option value="Morning (9:00 AM - 12:00 PM)">Morning (9:00 AM - 12:00 PM)</option>
+                <option value="Afternoon (12:00 PM - 4:00 PM)">Afternoon (12:00 PM - 4:00 PM)</option>
+                <option value="Evening (4:00 PM - 8:00 PM)">Evening (4:00 PM - 8:00 PM)</option>
+                <option value="Emergency / ASAP (Within 1 Hour)">⚡ Emergency / ASAP Visit</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="bookingCustomerName">Your Full Name *</label>
+              <input type="text" id="bookingCustomerName" class="form-input" placeholder="e.g. Rahul Gupta" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bookingCustomerPhone">Contact Phone / WhatsApp *</label>
+              <input type="tel" id="bookingCustomerPhone" class="form-input" placeholder="e.g. 9876543210" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="bookingCustomerAddress">Service Location / Doorstep Address *</label>
+            <textarea id="bookingCustomerAddress" class="form-textarea" rows="2" placeholder="House/Flat No, Landmark, Sector, Area..." required></textarea>
+            <span class="form-hint">The professional will visit this location during your chosen time slot.</span>
+          </div>
+
+        </div>
+
+        <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" class="btn btn-secondary" id="serviceBookingSaveOnlyBtn">Save Request Only</button>
+          <button type="submit" class="whatsapp-checkout-btn" style="padding:0.65rem 1.25rem;">
+            <span>💬</span> Confirm & WhatsApp Pro
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: ADD / EDIT SERVICE PARTNER (MERCHANT VIEW)
+       ==================================================================== -->
+  <div class="modal-overlay" id="merchantServiceModal">
+    <div class="modal-window">
+      
+      <div class="modal-header">
+        <h3 class="modal-title" id="merchantServiceModalTitle">Add New Service Partner</h3>
+        <button type="button" class="icon-btn" id="closeMerchantServiceBtn">✕</button>
+      </div>
+
+      <form id="merchantServiceForm">
+        <div class="modal-body">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="mspName">Full Name *</label>
+              <input type="text" id="mspName" class="form-input" placeholder="e.g. Ramesh Kumar" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="mspCategory">Trade / Profession *</label>
+              <select id="mspCategory" class="select-control" required>
+                <option value="Plumber">Plumber</option>
+                <option value="Electrician">Electrician</option>
+                <option value="Construction Worker / Mason">Construction Worker / Mason</option>
+                <option value="Doctor / General Physician">Doctor / General Physician</option>
+                <option value="Welder / Fabricator">Welder / Fabricator</option>
+                <option value="Carpenter">Carpenter</option>
+                <option value="Painter">Painter</option>
+                <option value="AC & Appliance Repair">AC & Appliance Repair</option>
+                <option value="Diagnostic & Pathology">Diagnostic & Pathology</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mspTitle">Professional Title / Subtitle</label>
+            <input type="text" id="mspTitle" class="form-input" placeholder="e.g. Master Plumber & Sanitary Expert">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="mspPhone">Call Phone Number *</label>
+              <input type="text" id="mspPhone" class="form-input" placeholder="+91 98765 43210" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="mspWhatsApp">WhatsApp Number *</label>
+              <input type="text" id="mspWhatsApp" class="form-input" placeholder="919876543210 (digits only)" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="mspExperience">Years of Experience</label>
+              <input type="text" id="mspExperience" class="form-input" placeholder="e.g. 10+ Years">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="mspVisitingFee">Base Visiting / Consult Fee (₹) *</label>
+              <input type="number" id="mspVisitingFee" class="form-input" min="0" step="10" placeholder="250" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mspAddress">Operating Hub / Service Area</label>
+            <input type="text" id="mspAddress" class="form-input" placeholder="e.g. Sector 4 Market / Doorstep Service">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mspSpecialties">Specialties & Skills (Comma-separated)</label>
+            <input type="text" id="mspSpecialties" class="form-input" placeholder="e.g. Pipe Leakage, Sanitary Fitting, Tank Cleaning">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mspImage">Avatar / Photo URL</label>
+            <input type="url" id="mspImage" class="form-input" placeholder="https://images.unsplash.com/...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mspDesc">Bio / Overview</label>
+            <textarea id="mspDesc" class="form-textarea" rows="2" placeholder="Experienced professional offering prompt and dependable doorstep service..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="servicesController.closeMerchantServiceModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Partner</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: FAST STOCK IN & STOCK OUT STATION (SCANNER & MIC)
+       ==================================================================== -->
+  <div class="modal-backdrop" id="stockStationModal" role="dialog" aria-modal="true" aria-labelledby="stockStationTitle">
+    <div class="modal-dialog" style="max-width: 780px;">
+      
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+          <h3 id="stockStationTitle" style="margin:0">⚡ Quick Stock Station</h3>
+          <span class="stock-mode-pill in" id="stockCurrentModeBadge">📥 Stock IN (Restock)</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeStockStationBtn" aria-label="Close Fast Stock Station">×</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.5rem;">
+
+        <!-- Top Controls: Mode Switcher & Quantity Stepper -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; background:var(--bg-surface-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-medium);">
+          
+          <!-- Mode Toggle: IN vs OUT -->
+          <div>
+            <span style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:0.35rem; font-weight:700;">SELECT ACTION:</span>
+            <div class="btn-mode-toggle">
+              <button type="button" class="mode-in active" id="stockModeInBtn">
+                📥 Stock IN (Restock)
+              </button>
+              <button type="button" class="mode-out" id="stockModeOutBtn">
+                📤 Stock OUT (Sale / Dispatch)
+              </button>
+            </div>
+          </div>
+
+          <!-- Quantity Selector & Presets -->
+          <div>
+            <span style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:0.35rem; font-weight:700;">DEFAULT QTY PER SCAN / VOICE:</span>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <input type="number" id="stockStationQtyInput" min="1" max="999" value="1" class="form-input" style="width:75px; text-align:center; font-weight:800; font-size:1.1rem; padding:0.4rem;">
+              <div style="display:flex; gap:0.3rem;">
+                <button type="button" class="qty-preset-btn active btn btn-secondary" data-qty="1" style="padding:0.4rem 0.65rem; font-size:0.85rem; font-weight:700;">1x</button>
+                <button type="button" class="qty-preset-btn btn btn-secondary" data-qty="5" style="padding:0.4rem 0.65rem; font-size:0.85rem; font-weight:700;">5x</button>
+                <button type="button" class="qty-preset-btn btn btn-secondary" data-qty="10" style="padding:0.4rem 0.65rem; font-size:0.85rem; font-weight:700;">10x</button>
+                <button type="button" class="qty-preset-btn btn btn-secondary" data-qty="25" style="padding:0.4rem 0.65rem; font-size:0.85rem; font-weight:700;">25x</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Input Method Tabs: Scanner vs Mic Voice vs Manual Input -->
+        <div class="stock-station-tabs">
+          <button type="button" class="stock-station-tab-btn active" data-tab="scanner">
+            📷 Camera Barcode Scanner
+          </button>
+          <button type="button" class="stock-station-tab-btn" data-tab="voice">
+            🎙️ Voice Mic Assistant
+          </button>
+          <button type="button" class="stock-station-tab-btn" data-tab="manual">
+            ⌨️ Manual SKU / Search
+          </button>
+        </div>
+
+        <!-- TAB PANE 1: Camera Barcode Scanner -->
+        <div class="stock-station-pane active" data-pane="scanner">
+          <div class="stock-scanner-container">
+            
+            <div class="scanner-viewfinder">
+              <video id="stockScannerVideo" class="scanner-video" playsinline autoplay muted></video>
+              <div class="scanner-overlay">
+                <div class="scanner-target-box">
+                  <div class="scanner-scanline"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="scannerStatusText" style="font-size:0.92rem; color:var(--text-secondary); text-align:center; font-weight:600;">
+              Starting camera feed...
+            </div>
+
+            <!-- Instant Test Barcode Chips (For Testing Without Physical Box) -->
+            <div class="test-skus-container">
+              <span style="font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                ⚡ 1-Click Test Barcode Chips:
+              </span>
+              <div class="test-skus-chips">
+                <button type="button" class="test-sku-chip" onclick="stockAssistant.testScanSKU('GROC-ATT-003')">🌾 Aashirvaad Atta (GROC-ATT-003)</button>
+                <button type="button" class="test-sku-chip" onclick="stockAssistant.testScanSKU('GROC-DAL-001')">🥣 Tata Toor Dal (GROC-DAL-001)</button>
+                <button type="button" class="test-sku-chip" onclick="stockAssistant.testScanSKU('GROC-OIL-002')">🌻 Sunflower Oil (GROC-OIL-002)</button>
+                <button type="button" class="test-sku-chip" onclick="stockAssistant.testScanSKU('MED-DET-001')">🧴 Dettol Antiseptic (MED-DET-001)</button>
+                <button type="button" class="test-sku-chip" onclick="stockAssistant.testScanSKU('GROC-RIC-004')">🍚 Basmati Rice (GROC-RIC-004)</button>
+                <button type="button" class="test-sku-chip" onclick="stockAssistant.testScanSKU('HARD-DRI-001')">⚡ Bosch Power Drill (HARD-DRI-001)</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB PANE 2: Mic Voice Assistant -->
+        <div class="stock-station-pane" data-pane="voice">
+          <div class="voice-mic-container">
+            
+            <div class="mic-button-wrapper">
+              <button type="button" class="mic-giant-btn" id="voiceMicTriggerBtn" title="Click to start/stop speaking">
+                🎙️
+              </button>
+            </div>
+
+            <div class="audio-waves" id="voiceAudioWaves">
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+            </div>
+
+            <span id="voiceMicStatusLabel" style="font-size:1.05rem; font-weight:700; color:var(--text-primary)">
+              Click to Speak Stock Command
+            </span>
+
+            <div class="voice-transcript-box" id="voiceLiveTranscript">
+              Tap the microphone and speak (e.g. "Add 10 Atta" or "Stock out 2 Dettol")...
+            </div>
+
+            <div class="voice-cheatsheet">
+              <div class="voice-tip-card">
+                <strong>📥 Stock IN Voice Examples:</strong>
+                <div>• "Add 10 Tata Dal"</div>
+                <div>• "Stock in 5 Aashirvaad Atta"</div>
+                <div>• "Basmati Rice 20 packet aaya"</div>
+              </div>
+              <div class="voice-tip-card">
+                <strong>📤 Stock OUT Voice Examples:</strong>
+                <div>• "Stock out 2 Dettol"</div>
+                <div>• "Deduct 3 Sunflower Oil"</div>
+                <div>• "1 Power Drill sold"</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB PANE 3: Manual SKU / Search -->
+        <div class="stock-station-pane" data-pane="manual">
+          <div style="padding: 1rem 0;">
+            <div class="form-group">
+              <label class="form-label" for="stockManualSearchInput">Enter Product SKU, Barcode, or Name:</label>
+              <div class="search-box-wrapper" style="max-width:100%">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="stockManualSearchInput" class="search-input" placeholder="Type e.g. GROC-ATT-003 or Tata Dal..." autocomplete="off">
+              </div>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted);">
+              Press <kbd style="background:var(--bg-surface-elevated); padding:0.15rem 0.4rem; border-radius:4px; border:1px solid var(--border-medium)">Enter</kbd> to immediately apply stock adjustment.
+            </div>
+          </div>
+        </div>
+
+        <!-- Matched Product Preview Card (Populated dynamically) -->
+        <div id="stockMatchedPreviewBox" style="display:none;"></div>
+
+        <!-- Recent Movement Log with Undo -->
+        <div style="margin-top:1.5rem; border-top:1.5px solid var(--border-subtle); padding-top:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.9rem; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.05em;">
+              📋 Recent Stock Movements Log
+            </span>
+            <button type="button" class="btn btn-secondary" id="stockUndoLastBtn" style="padding:0.35rem 0.85rem; font-size:0.82rem;">
+              ↩️ Undo Last Movement
+            </button>
+          </div>
+          
+          <div id="stockEmptyHistory" style="text-align:center; padding:1.25rem; font-size:0.9rem; color:var(--text-muted);">
+            No stock movements recorded in this session yet. Start scanning or speaking commands!
+          </div>
+
+          <div class="stock-history-list" id="stockRecentMovementsList"></div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="justify-content:space-between;">
+        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem; color:var(--text-secondary); font-weight:600;">
+          <input type="checkbox" id="stockAutoConfirmToggle" checked style="width:16px; height:16px; accent-color:var(--primary);">
+          Auto-Confirm on continuous scan & voice
+        </label>
+        <button type="button" class="btn btn-secondary" onclick="stockAssistant.closeStation()">Done / Close</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/inventory.js"></script>
+  <script src="js/stock_assistant.js"></script>
+  <script src="js/storefront.js"></script>
+  <script src="js/services.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

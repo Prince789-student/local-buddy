@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Buddy - Hackathon Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --card-subtle: #f8fafc;
+      --primary: #059669;
+      --primary-light: #10b981;
+      --primary-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      --accent-blue: #0284c7;
+      --accent-indigo: #4f46e5;
+      --accent-amber: #d97706;
+      --accent-rose: #e11d48;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-sub: #475569;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      background-image: 
+        radial-gradient(circle at 10% 15%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+        radial-gradient(circle at 90% 85%, rgba(56, 189, 248, 0.06) 0%, transparent 45%);
+    }
+
+    /* Deck Header & Controls */
+    .deck-header {
+      width: 100%;
+      max-width: 1160px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+
+    .deck-brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .slide-counter {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      background: var(--card-bg);
+      padding: 0.45rem 1.15rem;
+      border-radius: 9999px;
+      border: 1.5px solid var(--card-border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Slide Container */
+    .slide-frame {
+      width: 100%;
+      max-width: 1160px;
+      aspect-ratio: 16 / 9;
+      min-height: 620px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 28px;
+      padding: 2.75rem 3.25rem;
+      box-shadow: 0 24px 50px -12px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.03);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide {
+      display: none;
+      height: 100%;
+      flex-direction: column;
+      justify-content: center;
+      animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.995); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Slide Typography & Tags */
+    .slide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      background: rgba(5, 150, 105, 0.1);
+      padding: 0.4rem 1.05rem;
+      border-radius: 9999px;
+      border: 1.5px solid rgba(5, 150, 105, 0.25);
+      margin-bottom: 0.85rem;
+      align-self: flex-start;
+    }
+
+    .slide-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.85rem;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      margin-bottom: 0.6rem;
+    }
+
+    .slide-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Layout Grids */
+    .grid-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2.25rem;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.15rem;
+    }
+
+    .grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1rem;
+    }
+
+    /* Card Boxes */
+    .card-box {
+      background: var(--card-subtle);
+      border: 1.5px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .card-box:hover {
+      background: #ffffff;
+      border-color: #94a3b8;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-icon {
+      font-size: 1.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-box h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .card-box p {
+      font-size: 1.02rem;
+      color: var(--text-muted);
+      line-height: 1.42;
+      font-weight: 500;
+    }
+
+    .highlight-stat {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.75rem;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    /* Slide Media / Image Frame */
+    .slide-media {
+      width: 100%;
+      height: 100%;
+      max-height: 380px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1.5px solid var(--card-border);
+      box-shadow: 0 18px 36px -10px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.03);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .slide-media:hover img {
+      transform: scale(1.02);
+    }
+
+    /* Controls Bottom Bar */
+    .deck-controls {
+      width: 100%;
+      max-width: 1160px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .btn-nav {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.75rem 1.6rem;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-nav:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .btn-nav.primary {
+      background: var(--primary-gradient);
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-nav.primary:hover {
+      box-shadow: 0 8px 22px rgba(5, 150, 105, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .keyboard-hint {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .keyboard-hint kbd {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="deck-header">
+    <div class="deck-brand">
+      <span>🏪</span> Local Buddy • Pitch Deck
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.85rem;">
+      <a href="index.html" class="btn-nav" style="padding: 0.45rem 1.15rem; font-size: 0.95rem; text-decoration: none; color: var(--primary); border-color: rgba(5, 150, 105, 0.35);">
+        🏪 Open Store App
+      </a>
+      <a href="Local_Buddy_Pitch_Deck.pdf" download="Local_Buddy_Pitch_Deck.pdf" class="btn-nav" style="padding: 0.45rem 1.15rem; font-size: 0.95rem; text-decoration: none; color: var(--primary); border-color: rgba(5, 150, 105, 0.35);">
+        📥 Download PDF
+      </a>
+      <div class="slide-counter" id="slideIndicator">Slide 1 / 8</div>
+    </div>
+  </header>
+
+  <main class="slide-frame">
+    
+    <!-- SLIDE 1: Title & Hero Hook -->
+    <div class="slide active" data-slide="1">
+      <div class="grid-split">
+        <div>
+          <div class="slide-tag">🚀 Hyperlocal Commerce Revolution</div>
+          <h1 class="slide-title" style="font-size: 3.3rem;">Local Buddy</h1>
+          <p class="slide-subtitle" style="font-size: 1.35rem; margin-bottom: 1.25rem;">
+            Empowering 30M+ Neighborhood Kiranas with Zero-Commission Storefronts, 1-Click WhatsApp Orders & 5-Min Micro-Consultations.
+          </p>
+          <div class="grid-3" style="margin-top: 0.75rem;">
+            <div class="card-box">
+              <span class="card-icon">⚡</span>
+              <h3>0% Commission</h3>
+              <p>Keep 100% of profits with zero aggregator deductions.</p>
+            </div>
+            <div class="card-box">
+              <span class="card-icon">💬</span>
+              <h3>1-Click WhatsApp</h3>
+              <p>Direct conversational checkout & fast local dispatch.</p>
+            </div>
+            <div class="card-box">
+              <span class="card-icon">⏱️</span>
+              <h3>5-Min Advice</h3>
+              <p>Micro-consults with local pros for a minimal nominal fee.</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-media">
+          <img src="assets/slide1_hero.jpg" alt="Local Buddy Neighborhood Store">
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: The Problem -->
+    <div class="slide" data-slide="2">
+      <div class="grid-split">
+        <div>
+          <div class="slide-tag" style="color: var(--accent-rose); background: rgba(225, 29, 72, 0.1); border-color: rgba(225, 29, 72, 0.3);">
+            ⚠️ The Real Problem
+          </div>
+          <h2 class="slide-title">Neighborhood Retail is Under Threat</h2>
+          <p class="slide-subtitle">Local merchants and skilled tradesmen are squeezed by predatory aggregator fees and complex tools.</p>
+          <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+            <div class="card-box" style="border-left: 5px solid var(--accent-rose);">
+              <h3>📉 20% to 30% Aggregator Commissions</h3>
+              <p>Quick-commerce dark stores and gig apps eat into thin margins of independent shops.</p>
+            </div>
+            <div class="card-box" style="border-left: 5px solid var(--accent-amber);">
+              <h3>🧩 Bloated & Costly POS Hardware</h3>
+              <p>Existing retail software is too complex and requires expensive hardware setups.</p>
+            </div>
+            <div class="card-box" style="border-left: 5px solid var(--accent-blue);">
+              <h3>🔕 Heavy Fees for Minor Guidance</h3>
+              <p>Customers must pay full visit charges even when they just need 5 minutes of diagnosis.</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-media">
+          <img src="assets/slide2_problem.jpg" alt="Aggregator Fees Problem">
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: The Solution Ecosystem -->
+    <div class="slide" data-slide="3">
+      <div class="grid-split">
+        <div>
+          <div class="slide-tag">💡 Our Solution</div>
+          <h2 class="slide-title">Unified Hyperlocal Ecosystem</h2>
+          <p class="slide-subtitle">A lightweight, seamless web application connecting merchants, customers, and verified tradesmen.</p>
+          <div class="grid-2x2">
+            <div class="card-box">
+              <div class="highlight-stat">1</div>
+              <h3>Merchant Hub</h3>
+              <p>Real-time inventory, restock alerts & profit margin analytics.</p>
+            </div>
+            <div class="card-box">
+              <div class="highlight-stat">2</div>
+              <h3>Storefront</h3>
+              <p>Digital catalog with live stock & 1-tap WhatsApp cart ordering.</p>
+            </div>
+            <div class="card-box">
+              <div class="highlight-stat">3</div>
+              <h3>5-Min Advice</h3>
+              <p>Instant expert triage for minimal nominal fee (₹20-₹49).</p>
+            </div>
+            <div class="card-box">
+              <div class="highlight-stat">4</div>
+              <h3>Service Roster</h3>
+              <p>Verified plumbers, electricians & direct doorstep booking.</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-media">
+          <img src="assets/slide3_solution.jpg" alt="Hyperlocal Connected Ecosystem">
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Micro-Consultation Feature Spotlight -->
+    <div class="slide" data-slide="4">
+      <div class="grid-split">
+        <div>
+          <div class="slide-tag" style="color: var(--accent-amber); background: rgba(217, 119, 6, 0.1); border-color: rgba(217, 119, 6, 0.3);">
+            ⏱️ Innovation Spotlight
+          </div>
+          <h2 class="slide-title">5-Min Micro-Consultations & Advice</h2>
+          <p class="slide-subtitle">Customers connect directly with neighborhood experts for quick 5-min guidance at a minimal nominal fee.</p>
+          <div class="grid-2x2">
+            <div class="card-box">
+              <span class="card-icon">⚡</span>
+              <h3>Instant Triage</h3>
+              <p>Quick guidance for electrical, plumbing, or DIY doubts without full visit costs.</p>
+            </div>
+            <div class="card-box">
+              <span class="card-icon">🪙</span>
+              <h3>Minimal Micro-Fee</h3>
+              <p>Ultra-accessible (₹20 to ₹49 for 5 mins) paid instantly via 1-tap UPI.</p>
+            </div>
+            <div class="card-box">
+              <span class="card-icon">💼</span>
+              <h3>Pro Monetization</h3>
+              <p>Technicians monetize spare minutes and earn neighborhood trust.</p>
+            </div>
+            <div class="card-box">
+              <span class="card-icon">🚀</span>
+              <h3>Doorstep Upgrade</h3>
+              <p>Converts simple 5-min calls into full verified doorstep repair bookings.</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-media">
+          <img src="assets/slide4_micro_consult.jpg" alt="5-Minute Micro Consultation Call">
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: How It Works -->
+    <div class="slide" data-slide="5">
+      <div class="slide-tag">⚙️ Seamless Flow</div>
+      <h2 class="slide-title">Frictionless 3-Step Experience</h2>
+      <p class="slide-subtitle">Designed for non-tech-savvy shopkeepers & everyday neighborhood shoppers.</p>
+      <div class="grid-3" style="margin-top: 1rem;">
+        <div class="card-box" style="padding: 1.75rem;">
+          <div class="highlight-stat" style="font-size: 2.2rem; color: var(--primary);">Step 1</div>
+          <span class="card-icon" style="font-size: 2.2rem;">📦</span>
+          <h3 style="font-size: 1.45rem;">Merchant Setup</h3>
+          <p style="font-size: 1.1rem;">Shopkeeper adds products with cost/selling price. App calculates valuation & low-stock alerts automatically.</p>
+        </div>
+        <div class="card-box" style="padding: 1.75rem;">
+          <div class="highlight-stat" style="font-size: 2.2rem; color: var(--accent-blue);">Step 2</div>
+          <span class="card-icon" style="font-size: 2.2rem;">🛍️</span>
+          <h3 style="font-size: 1.45rem;">Browse or Consult</h3>
+          <p style="font-size: 1.1rem;">Shoppers browse stock or request a 5-min quick expert advice session with 1 click via smartphone.</p>
+        </div>
+        <div class="card-box" style="padding: 1.75rem;">
+          <div class="highlight-stat" style="font-size: 2.2rem; color: var(--accent-indigo);">Step 3</div>
+          <span class="card-icon" style="font-size: 2.2rem;">📲</span>
+          <h3 style="font-size: 1.45rem;">Instant WhatsApp</h3>
+          <p style="font-size: 1.1rem;">Pre-formatted order string with itemized bill & GPS address is delivered directly to merchant WhatsApp.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Market Opportunity & Traction -->
+    <div class="slide" data-slide="6">
+      <div class="slide-tag" style="color: var(--accent-blue); background: rgba(2, 132, 199, 0.1); border-color: rgba(2, 132, 199, 0.3);">
+        📊 Market Size
+      </div>
+      <h2 class="slide-title">A Massive Hyperlocal Opportunity</h2>
+      <p class="slide-subtitle">Targeting unorganized retail and neighborhood services across Tier 1, 2, and 3 cities.</p>
+      <div class="grid-3" style="margin-top: 1rem;">
+        <div class="card-box" style="padding: 1.75rem;">
+          <div class="highlight-stat">$800B+</div>
+          <h3 style="font-size: 1.45rem;">Total Addressable Market</h3>
+          <p style="font-size: 1.1rem;">Indian unorganized retail market with over 30M+ local Kirana & neighborhood shops.</p>
+        </div>
+        <div class="card-box" style="padding: 1.75rem;">
+          <div class="highlight-stat">500M+</div>
+          <h3 style="font-size: 1.45rem;">WhatsApp User Base</h3>
+          <p style="font-size: 1.1rem;">Zero friction adoption because every customer and shopkeeper already uses WhatsApp daily.</p>
+        </div>
+        <div class="card-box" style="padding: 1.75rem;">
+          <div class="highlight-stat">0%</div>
+          <h3 style="font-size: 1.45rem;">Commission Model</h3>
+          <p style="font-size: 1.1rem;">Unbeatable value compared to 20-30% charged by quick-commerce and large aggregator apps.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Business & Monetization Model -->
+    <div class="slide" data-slide="7">
+      <div class="slide-tag" style="color: var(--accent-amber); background: rgba(217, 119, 6, 0.1); border-color: rgba(217, 119, 6, 0.3);">
+        💰 Business Model
+      </div>
+      <h2 class="slide-title">Sustainable Monetization</h2>
+      <p class="slide-subtitle">Freemium core with high-margin value-added services & micro-transactions.</p>
+      <div class="grid-4" style="margin-top: 0.75rem;">
+        <div class="card-box" style="padding: 1.5rem;">
+          <span class="card-icon">🆓</span>
+          <h3>Free Core</h3>
+          <p>Basic inventory & digital storefront free forever to drive rapid viral adoption.</p>
+        </div>
+        <div class="card-box" style="padding: 1.5rem;">
+          <span class="card-icon">⏱️</span>
+          <h3>Micro-Consults</h3>
+          <p>Nominal ₹3-₹5 platform share per 5-min expert advice call session.</p>
+        </div>
+        <div class="card-box" style="padding: 1.5rem;">
+          <span class="card-icon">⭐</span>
+          <h3>Pro SaaS</h3>
+          <p>₹299/mo for automated SMS alerts, GST invoicing, & multi-store analytics.</p>
+        </div>
+        <div class="card-box" style="padding: 1.5rem;">
+          <span class="card-icon">💳</span>
+          <h3>FinTech & Credit</h3>
+          <p>Khata / credit ledger and merchant micro-financing based on sales velocity.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Strategic Advantage & Vision -->
+    <div class="slide" data-slide="8">
+      <div class="slide-tag">🏆 Strategic Advantage</div>
+      <h2 class="slide-title">Our Competitive Edge & Launch Vision</h2>
+      <p class="slide-subtitle">Designed from day one for frictionless grassroots adoption and strong community trust.</p>
+      <div class="grid-3" style="margin-bottom: 1.5rem;">
+        <div class="card-box" style="padding: 1.6rem;">
+          <span class="card-icon">📲</span>
+          <h3 style="font-size: 1.4rem;">Zero-Friction Entry</h3>
+          <p style="font-size: 1.1rem;">No app install barrier — works seamlessly via web & WhatsApp, removing the biggest hurdle to user adoption.</p>
+        </div>
+        <div class="card-box" style="padding: 1.6rem;">
+          <span class="card-icon">🤝</span>
+          <h3 style="font-size: 1.4rem;">Hyperlocal Trust Loop</h3>
+          <p style="font-size: 1.1rem;">Empowers existing neighborhood vendors and verified local experts rather than replacing them with dark stores.</p>
+        </div>
+        <div class="card-box" style="padding: 1.6rem;">
+          <span class="card-icon">⚡</span>
+          <h3 style="font-size: 1.4rem;">Dual-Growth Flywheel</h3>
+          <p style="font-size: 1.1rem;">Viral merchant word-of-mouth paired with high-frequency 5-min micro-consultations drives organic retention.</p>
+        </div>
+      </div>
+      <div style="text-align: center; font-family: 'Outfit', sans-serif; font-size: 1.55rem; font-weight: 800; color: var(--primary);">
+        "Empowering Every Neighborhood Through Trust, Speed, and Micro-Connections."
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="deck-controls">
+    <button type="button" class="btn-nav" id="prevBtn" onclick="changeSlide(-1)">
+      ← Previous
+    </button>
+    <div class="keyboard-hint">
+      Use <kbd>←</kbd> <kbd>→</kbd> arrow keys to navigate
+    </div>
+    <button type="button" class="btn-nav primary" id="nextBtn" onclick="changeSlide(1)">
+      Next Slide →
+    </button>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+
+    function updateDeck() {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const activeEl = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      if (activeEl) activeEl.classList.add('active');
+
+      document.getElementById('slideIndicator').textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      document.getElementById('prevBtn').style.visibility = currentSlide === 1 ? 'hidden' : 'visible';
+      document.getElementById('nextBtn').textContent = currentSlide === totalSlides ? 'Restart ↺' : 'Next Slide →';
+    }
+
+    function changeSlide(direction) {
+      currentSlide += direction;
+      if (currentSlide > totalSlides) currentSlide = 1;
+      if (currentSlide < 1) currentSlide = 1;
+      updateDeck();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+      if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    updateDeck();
+  </script>
+</body>
+</html>
